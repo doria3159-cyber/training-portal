@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="description"
+    content="2026 하반기 6급 미래인재과정 통합포털"
+  >
+
+  <meta name="theme-color" content="#173f73">
+
+  <title>2026 하반기 6급 미래인재과정 통합포털</title>
+
+  <!-- Apps Script 서버 사전 연결 -->
+  <link rel="preconnect" href="https://script.google.com">
+  <link rel="preconnect" href="https://script.googleusercontent.com">
+  <link rel="dns-prefetch" href="https://script.google.com">
+  <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+
+  <style>
+    :root {
+      --primary: #173f73;
+      --accent: #2469aa;
+      --background: #f3f6fa;
+      --text: #1f2937;
+      --muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--background);
+      font-family:
+        Pretendard,
+        "Noto Sans KR",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    #portalFrame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      border: 0;
+      display: block;
+      background: #f3f6fa;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    #portalFrame.ready {
+      opacity: 1;
+    }
+
+    #loadingScreen {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(
+          circle at top,
+          #eaf2fb 0%,
+          #f5f8fc 48%,
+          #f3f6fa 100%
+        );
+      transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+    }
+
+    #loadingScreen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-card {
+      width: min(400px, 100%);
+      padding: 36px 28px;
+      border: 1px solid #dce5ee;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 48px rgba(16, 46, 85, 0.12);
+      text-align: center;
+    }
+
+    .logo {
+      display: grid;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      place-items: center;
+      border-radius: 20px;
+      color: #ffffff;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+      );
+      font-size: 27px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(23, 63, 115, 0.2);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--text);
+      font-size: 21px;
+      line-height: 1.45;
+      letter-spacing: -0.04em;
+      word-break: keep-all;
+    }
+
+    .description {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      margin: 24px auto 15px;
+      border: 4px solid #dce7f2;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-text {
+      margin: 0;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    #fallback {
+      display: none;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #e5eaf0;
+    }
+
+    #fallback.show {
+      display: block;
+    }
+
+    #fallback p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .direct-button {
+      display: inline-flex;
+      min-height: 44px;
+      padding: 0 18px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      color: #ffffff;
+      background: var(--primary);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .loading-card {
+        padding: 32px 22px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 19px;
+      }
+
+      .description {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main id="app">
+
+    <!-- GitHub에서 즉시 표시되는 로딩 화면 -->
+    <section id="loadingScreen" aria-live="polite">
+      <div class="loading-card">
+
+        <div class="logo" aria-hidden="true">율</div>
+
+        <h1>
+          2026 하반기<br>
+          6급 미래인재과정 통합포털
+        </h1>
+
+        <p class="description">
+          출석 체크, 자료제출 및 설문조사 정보를<br>
+          불러오고 있습니다.
+        </p>
+
+        <div class="spinner" aria-hidden="true"></div>
+
+        <p class="loading-text">
+          통합포털 연결 중
+        </p>
+
+        <div id="fallback">
+          <p>
+            연결이 지연되고 있습니다.<br>
+            아래 버튼을 눌러 직접 접속할 수 있습니다.
+          </p>
+
+          <a
+            class="direct-button"
+            href="https://script.google.com/macros/s/AKfycbw4_av1qieD0V8A6hgy3hxfYWyKHmxVro4-Tyb_raYv7ohu9ySbX6IWqx0h7PsKspsa/exec"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            통합포털 직접 열기
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 기존 Apps Script 통합포털 -->
+    <iframe
+      id="portalFrame"
+      src="https://script.google.com/macros/s/AKfycbw4_av1qieD0V8A6hgy3hxfYWyKHmxVro4-Tyb_raYv7ohu9ySbX6IWqx0h7PsKspsa/exec"
+      title="2026 하반기 6급 미래인재과정 통합포털"
+      allow="camera; microphone; clipboard-read; clipboard-write"
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const frame = document.getElementById('portalFrame');
+      const loadingScreen = document.getElementById('loadingScreen');
+      const fallback = document.getElementById('fallback');
+
+      let loaded = false;
+
+      frame.addEventListener('load', () => {
+        if (loaded) return;
+
+        loaded = true;
+        frame.classList.add('ready');
+
+        window.setTimeout(() => {
+          loadingScreen.classList.add('hidden');
+        }, 500);
+      });
+
+      // 10초 이상 연결되지 않으면 직접 접속 버튼 표시
+      window.setTimeout(() => {
+        if (!loaded) {
+          fallback.classList.add('show');
+        }
+      }, 10000);
+    })();
+  </script>
+</body>
+</html>
